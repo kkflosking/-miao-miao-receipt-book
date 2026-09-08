@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ff8fa8" />
+  <meta name="description" content="喵喵小票簿：记下每一笔小幸福，自动生成可爱小票。" />
+  <title>喵喵小票簿</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="additions.css" />
+  <link rel="stylesheet" href="cat-assets.css" />
+  <style>
+    :root{--pink:#e9a28f;--deep:#735044;--cream:#fffaf0;--mint:#e8d1b6;--yellow:#f4c66c;--paper:#fffdf7;--line:#ead8c7;--shadow:0 14px 35px rgba(115,80,68,.12)}
+    body{background:#fffaf0}.sprinkles{opacity:.16}.cat-scene{height:190px;overflow:hidden;background:#f6e7cf}.cat-scene img{width:100%;height:100%;object-fit:cover;object-position:center 10%;display:block;position:relative;z-index:4}.primary-btn{background:#e9a28f}.nav-btn.active{background:#f8dfd5;color:#a86555}.price-badge{background:#f8dfaa}.big-paw{background:#f5dfc8}
+  </style>
+</head>
+<body>
+  <div class="sprinkles" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="喵喵小票簿首页"><span class="brand-cat">ฅ</span><span>喵喵小票簿</span></a>
+    <nav aria-label="主要导航">
+      <button class="nav-btn active" data-view="home">今日</button>
+      <button class="nav-btn" data-view="collection">收藏柜</button>
+      <button class="nav-btn" data-view="receipts">小票夹</button>
+    </nav>
+    <button class="icon-btn" id="soundBtn" aria-label="切换音效">♫</button>
+  </header>
+
+  <main>
+    <section class="view active" id="home">
+      <div class="dashboard">
+        <section class="summary-card card">
+          <div>
+            <p class="eyebrow">SEPTEMBER · 本月</p>
+            <h1>花得明白，<br><span>快乐有迹可循。</span></h1>
+            <div class="money-overview"><div class="total-wrap"><span>本月支出</span><strong id="monthTotal">¥ 0.00</strong></div><div class="mini-total income"><span>本月收入</span><strong id="monthIncome">¥ 0.00</strong></div><div class="mini-total balance"><span>本月结余</span><strong id="monthBalance">¥ 0.00</strong></div></div>
+          </div>
+          <div class="cat-scene"><img src="assets/cat-stickers.jpeg" alt="一组软萌的小猫贴纸" /></div>
+        </section>
+
+        <section class="quick-card card">
+          <div class="section-title"><div><span class="paw">●</span><h2>记一笔</h2></div><small id="formHint">喵~ 今天买了什么？</small></div>
+          <div class="entry-tabs" role="tablist" aria-label="收支类型"><button type="button" class="entry-tab active" data-entry-type="expense">支出</button><button type="button" class="entry-tab" data-entry-type="income">收入</button></div>
+          <form id="expenseForm">
+            <label><span id="nameLabel">买了什么</span><input id="itemName" required maxlength="24" placeholder="比如：草莓蛋糕" /></label>
+            <div class="form-row">
+              <label><span id="amountLabel">花了多少</span><div class="money-input"><span>¥</span><input id="itemPrice" type="number" required min="0" step="0.01" placeholder="0.00" /></div></label>
+              <label class="expense-only">属于哪一类<select id="itemCategory"><option>餐饮</option><option>购物</option><option>交通</option><option>娱乐</option><option>学习</option><option>其他</option></select></label>
+            </div>
+            <div class="form-row compact">
+              <label><span id="dateLabel">购买日期</span><input id="itemDate" type="date" required /></label>
+              <label class="toggle-label expense-only">小票显示价格<input id="showPrice" type="checkbox" checked><span class="toggle"></span></label>
+            </div>
+            <label>给它留句话<input id="itemNote" maxlength="40" placeholder="可选：今天也要好好生活" /></label>
+            <div class="form-actions">
+              <label class="collect-check expense-only"><input id="addCollection" type="checkbox" checked> 同时放进我的收藏柜</label>
+              <button class="primary-btn" type="submit"><span id="submitText">生成我的小票</span> <span>→</span></button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <section class="recent-section">
+        <div class="section-title"><div><h2>最近的小脚印</h2></div><button class="text-btn" data-go="receipts">查看全部 →</button></div>
+        <div class="recent-grid" id="recentGrid"></div>
+      </section>
+    </section>
+
+    <section class="view" id="collection">
+      <div class="page-heading"><div><p class="eyebrow">MY LITTLE TREASURES</p><h1>我的收藏柜</h1><p>买过的东西，也可以成为生活的小小纪念。</p></div><span class="big-paw">♡</span></div>
+      <div class="toolbar"><div class="search"><span>⌕</span><input id="collectionSearch" placeholder="找找买过的东西" /></div><div class="price-filter"><button class="chip active" data-price="all">全部</button><button class="chip" data-price="shown">标价格</button><button class="chip" data-price="hidden">不标价</button></div></div>
+      <div class="collection-grid" id="collectionGrid"></div>
+    </section>
+
+    <section class="view" id="receipts">
+      <div class="page-heading"><div><p class="eyebrow">MEMORIES ON PAPER</p><h1>我的小票夹</h1><p>每一张，都是认真生活过的证明。</p></div><span class="big-paw">⌇</span></div>
+      <div class="receipt-wall" id="receiptWall"></div>
+    </section>
+  </main>
+
+  <dialog id="receiptDialog">
+    <button class="close-btn" id="closeDialog" aria-label="关闭">×</button>
+    <div id="receiptPreview"></div>
+    <div class="dialog-actions"><button class="secondary-btn" id="copyReceipt">复制小票内容</button><button class="primary-btn" id="saveReceipt">保存为图片</button></div>
+  </dialog>
+  <dialog id="encouragementDialog" class="encouragement-dialog"><button class="close-btn" id="closeEncouragement" aria-label="关闭">×</button><div class="encouragement-cat"><img id="encouragementCat" src="assets/income-cat-1.webp" alt="鼓励小猫"></div><p class="eyebrow">CAT CHEER CARD</p><h2 id="encouragementTitle">今天也在闪闪发光！</h2><p id="encouragementText">每一份认真赚来的收入，都值得被好好庆祝。</p><div class="encouragement-amount" id="encouragementAmount">+ ¥ 0.00</div><button class="primary-btn" id="encouragementOk">收到猫猫的鼓励 ♡</button></dialog>
+  <input id="collectionImageInput" type="file" accept="image/*" hidden />
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
